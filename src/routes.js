@@ -14,6 +14,7 @@ export default function Routes() {
         drawerLabelStyle: {
           fontSize: 20,
         },
+        headerShown: false,
       }}
     >
       <Drawer.Screen
