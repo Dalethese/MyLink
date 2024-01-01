@@ -56,7 +56,11 @@ export const Home = () => {
       setLongUrl(input);
       setShortedLink(response.data.link);
 
-      saveLinks('sLinks', { id: response.data.id, link: response.data.link });
+      saveLinks('sLinks', {
+        id: response.data.id,
+        link: response.data.link,
+        long_url: response.data.long_url,
+      });
 
       setModalVisible(true);
       Keyboard.dismiss();

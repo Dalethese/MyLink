@@ -1,13 +1,37 @@
-import { Modal, Platform, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Modal } from 'react-native';
 import { StatusBarPage } from '../../components/StatusBarPage';
-import { Container, ListLinks, Title } from './style';
+import { Container, EmptyContainer, Title, WarningText } from './style';
 import { Menu } from '../../components/Menu';
 import ListItem from '../../components/ListItem';
 import { ModalLink } from '../../components/ModalLink';
 import useLinks from '../../hooks/useLinks';
+import { useEffect } from 'react';
+import { getStorageLinks } from '../../utils/storeLink';
+import { useIsFocused } from '@react-navigation/native';
 
 export const MyLinks = () => {
-  const modalVisible = useLinks((state) => state.modalVisible);
+  const [storageLinks, modalVisible, loading, setStorageLinks, setLoading] =
+    useLinks((state) => [
+      state.storageLinks,
+      state.modalVisible,
+      state.loading,
+      state.setStorageLinks,
+      state.setLoading,
+    ]);
+  let isFocused = useIsFocused();
+
+  useEffect(() => {
+    async function getLinks() {
+      setLoading(true);
+      const links = await getStorageLinks('sLinks');
+      setStorageLinks(links);
+      setLoading(false);
+    }
+
+    if (isFocused) {
+      getLinks();
+    }
+  }, [isFocused]);
 
   return (
     <Container>
@@ -17,20 +41,25 @@ export const MyLinks = () => {
 
       <Title>Meus Links</Title>
 
-      <ListLinks
-        data={[
-          { id: 1, link: 'test.com' },
-          { id: 2, link: 'test2.com' },
-          {
-            id: 3,
-            link: 'https://www.youtube.com/watch?v=liyLYthCyTU&list=PLAF5G8rnMmBZ3-XaaXXQcCUYj6IJCdb2J&index=5',
-          },
-        ]}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 30 }}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => <ListItem data={item} />}
-      />
+      {loading ? (
+        <EmptyContainer>
+          <ActivityIndicator color="#fff" size={24} />
+        </EmptyContainer>
+      ) : (
+        <FlatList
+          data={storageLinks}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 30 }}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => <ListItem data={item} />}
+        />
+      )}
+
+      {!loading && storageLinks.length < 1 && (
+        <EmptyContainer>
+          <WarningText>Você ainda não tem links salvos</WarningText>
+        </EmptyContainer>
+      )}
 
       <Modal visible={modalVisible} transparent animationType="slide">
         <ModalLink />

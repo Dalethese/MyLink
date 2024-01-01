@@ -13,3 +13,12 @@ export const Link = styled.Text`
   color: #fff;
   font-size: 18px;
 `;
+
+export const ActionBtn = styled.TouchableOpacity`
+  width: 15%;
+  margin: 7px 10px;
+  background-color: #ff5555;
+  border-radius: 7px;
+  align-items: center;
+  justify-content: center;
+`;
