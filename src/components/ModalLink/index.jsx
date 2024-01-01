@@ -1,4 +1,4 @@
-import { TouchableWithoutFeedback, View } from "react-native";
+import { TouchableWithoutFeedback, View, Share } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import {
   Button,
@@ -12,11 +12,46 @@ import {
   Title,
 } from "./styles";
 import { Feather } from "@expo/vector-icons";
+import useLinks from "../../hooks/useLinks";
 
-export function ModalLink({ closeModal }) {
+export function ModalLink() {
+  const [shortedLink, longUrl, isCopied, setIsCopied, setModalVisible] =
+    useLinks((state) => [
+      state.shortedLink,
+      state.longUrl,
+      state.isCopied,
+      state.setIsCopied,
+      state.setModalVisible,
+    ]);
+
   const copyLink = async () => {
-    await Clipboard.setStringAsync("link encurtado");
-    alert("link copiado");
+    await Clipboard.setStringAsync(shortedLink);
+    setIsCopied(true);
+  };
+
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `Link: ${shortedLink}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("activityType");
+        } else {
+          console.log("compartilhado com sucesso");
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log("Modal fechado");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsCopied(false);
+    setModalVisible(false);
   };
 
   return (
@@ -27,24 +62,26 @@ export function ModalLink({ closeModal }) {
 
       <Container>
         <Header>
-          <Button onPress={closeModal}>
-            <Feather name="x" color="#212743" size={30} />
+          <Button onPress={handleCloseModal}>
+            <Feather name='x' color='#212743' size={30} />
           </Button>
-          <Button>
-            <Feather name="share" color="#212743" size={30} />
+          <Button onPress={handleShare}>
+            <Feather name='share' color='#212743' size={30} />
           </Button>
         </Header>
 
         <LinkArea>
           <Title>Link encurtado</Title>
-          <LongUrl numberOfLines={1}>
-            https://github.com/Dalethese/react-native
-          </LongUrl>
+          <LongUrl numberOfLines={1}>{longUrl}</LongUrl>
 
           <ShortLinkArea activeOpacity={1} onPress={copyLink}>
-            <ShortLinkUrl numberOfLines={1}>https://bit.ly/276fv</ShortLinkUrl>
+            <ShortLinkUrl numberOfLines={1}>{shortedLink}</ShortLinkUrl>
             <Button onPress={copyLink}>
-              <Feather name="copy" color="#fff" size={25} />
+              {!isCopied ? (
+                <Feather name='copy' color='#fff' size={25} />
+              ) : (
+                <Feather name='check' color='#1bc949' size={25} />
+              )}
             </Button>
           </ShortLinkArea>
         </LinkArea>

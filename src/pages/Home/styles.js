@@ -54,12 +54,14 @@ export const Input = styled.TextInput`
   width: 90%;
   height: 50px;
   padding: 10px;
+  padding-right: 35px;
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 0 7px 7px 0;
   color: #fff;
   font-size: 17px;
   align-items: center;
   justify-content: center;
+  position: relative;
 `;
 
 export const ButtonLink = styled.TouchableOpacity`
@@ -74,4 +76,13 @@ export const ButtonLink = styled.TouchableOpacity`
 export const ButtonLinkText = styled.Text`
   font-size: 18px;
   font-weight: bold;
+`;
+
+export const BoxErase = styled.TouchableOpacity`
+  position: absolute;
+  right: 1%;
+  width: 35px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 `;
