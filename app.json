@@ -1,6 +1,14 @@
 {
   "expo": {
     "name": "MyLink",
-    "slug": "MyLink"
+    "slug": "MyLink",
+    "extra": {
+      "eas": {
+        "projectId": "aa16ba37-dd8a-4faf-999c-c30c7d5961e7"
+      }
+    },
+    "android": {
+      "package": "com.dalethese.MyLink"
+    }
   }
 }
