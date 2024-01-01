@@ -56,7 +56,7 @@ export function ModalLink() {
 
   return (
     <ModalContainer>
-      <TouchableWithoutFeedback onPress={() => closeModal()}>
+      <TouchableWithoutFeedback onPress={handleCloseModal}>
         <View style={{ flex: 1 }}></View>
       </TouchableWithoutFeedback>
 

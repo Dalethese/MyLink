@@ -1,4 +1,4 @@
-import { Platform, StatusBar } from "react-native";
+import { Platform } from "react-native";
 import styled from "styled-components/native";
 
 export const ContainerLogo = styled.View`
@@ -54,7 +54,7 @@ export const Input = styled.TextInput`
   width: 90%;
   height: 50px;
   padding: 10px;
-  padding-right: 35px;
+  padding-right: 38px;
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 0 7px 7px 0;
   color: #fff;

@@ -1,8 +1,19 @@
-import { LinearGradient } from "expo-linear-gradient";
-import { StatusBarPage } from "../../components/StatusBarPage";
-import { Menu } from "../../components/Menu";
-import { Feather } from "@expo/vector-icons";
-import * as Clipboard from "expo-clipboard";
+import { LinearGradient } from 'expo-linear-gradient';
+import { Feather } from '@expo/vector-icons';
+import * as Clipboard from 'expo-clipboard';
+import useLinks from '../../hooks/useLinks';
+import { StatusBarPage } from '../../components/StatusBarPage';
+import { ModalLink } from '../../components/ModalLink';
+import { Menu } from '../../components/Menu';
+import { api } from '../../services/api';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+} from 'react-native';
 import {
   BoxErase,
   BoxIcon,
@@ -15,18 +26,8 @@ import {
   Logo,
   Subtitle,
   Title,
-} from "./styles";
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  TouchableWithoutFeedback,
-  ActivityIndicator,
-} from "react-native";
-import { ModalLink } from "../../components/ModalLink";
-import { api } from "../../services/api";
-import useLinks from "../../hooks/useLinks";
+} from './styles';
+import { saveLinks } from '../../utils/storeLink';
 
 export const Home = () => {
   const { input, loading, modalVisible } = useLinks((state) => ({
@@ -48,19 +49,22 @@ export const Home = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/encurtamentos", {
-        url: input,
+      const response = await api.post('/shorten', {
+        long_url: input,
       });
 
       setLongUrl(input);
-      setShortedLink(response.data.urlEncurtada);
-      setInput("");
-      Keyboard.dismiss();
+      setShortedLink(response.data.link);
+
+      saveLinks('sLinks', { id: response.data.id, link: response.data.link });
+
       setModalVisible(true);
-    } catch (error) {
-      alert("Ocorreu um erro, tente novamente!");
       Keyboard.dismiss();
-      setInput("");
+      setInput('');
+    } catch (error) {
+      alert('Ocorreu um erro, tente novamente!');
+      Keyboard.dismiss();
+      setInput('');
     } finally {
       setLoading(false);
     }
@@ -71,7 +75,7 @@ export const Home = () => {
       const content = await Clipboard.getStringAsync();
       setInput(content);
     } catch (error) {
-      alert("Ocorreu um erro, tente novamente !");
+      alert('Ocorreu um erro, tente novamente !');
     }
   };
 
@@ -80,31 +84,31 @@ export const Home = () => {
       Keyboard.dismiss();
     }
 
-    setInput("");
+    setInput('');
   };
 
   return (
     // forma de recolher o teclado ao clicar fora dele
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <LinearGradient
-        colors={["#1ddbb9", "#132742"]}
+        colors={['#1ddbb9', '#132742']}
         style={{
           flex: 1,
-          justifyContent: "center",
+          justifyContent: 'center',
         }}
       >
-        <StatusBarPage backgroundColor='#1ddbb9' barStyle='light-content' />
+        <StatusBarPage backgroundColor="#1ddbb9" barStyle="light-content" />
 
         <Menu />
         {/* forma de subir o design junto com o teclado do dispositivo */}
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "position" : "padding"}
+          behavior={Platform.OS === 'ios' ? 'position' : 'padding'}
           enabled
         >
           <ContainerLogo>
             <Logo
-              source={require("../../assets/Logo.png")}
-              resizeMode='contain'
+              source={require('../../assets/Logo.png')}
+              resizeMode="contain"
             />
           </ContainerLogo>
 
@@ -114,25 +118,25 @@ export const Home = () => {
 
             <ContainerInput>
               <BoxIcon onPress={handlePaste}>
-                <Feather name='link' size={22} color='#fff' />
+                <Feather name="link" size={22} color="#fff" />
               </BoxIcon>
               <Input
-                placeholder='cole seu link aqui...'
-                placeholderTextColor='rgba(255, 255, 255, 0.5)'
-                autoCapitalize='none'
+                placeholder="cole seu link aqui..."
+                placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                autoCapitalize="none"
                 autoCorrect={false}
-                keyboardType='url'
+                keyboardType="url"
                 value={input}
                 onChangeText={(text) => setInput(text)}
               />
               <BoxErase onPress={handleErase}>
-                {input && <Feather name='delete' size={20} color='#fff' />}
+                {input && <Feather name="x-circle" size={20} color="#fff" />}
               </BoxErase>
             </ContainerInput>
 
             <ButtonLink onPress={handleShortLink}>
               {loading ? (
-                <ActivityIndicator color='#121212' size={24} />
+                <ActivityIndicator color="#121212" size={24} />
               ) : (
                 <ButtonLinkText>Gerar Link</ButtonLinkText>
               )}
@@ -140,7 +144,7 @@ export const Home = () => {
           </ContainerContent>
         </KeyboardAvoidingView>
 
-        <Modal visible={modalVisible} transparent animationType='slide'>
+        <Modal visible={modalVisible} transparent animationType="slide">
           <ModalLink />
         </Modal>
       </LinearGradient>
