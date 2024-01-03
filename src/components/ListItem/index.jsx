@@ -6,23 +6,18 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { deleteLinks } from '../../utils/storeLink';
 
 export default function ListItem({ data }) {
-  const [
-    storageLinks,
-    setStorageLinks,
-    setLongUrl,
-    setShortedLink,
-    setModalVisible,
-  ] = useLinks((state) => [
-    state.storageLinks,
-    state.setStorageLinks,
-    state.setLongUrl,
-    state.setShortedLink,
-    state.setModalVisible,
-  ]);
+  const [storageLinks, setStorageLinks, setLongUrl, setShortedLink, setModalVisible] =
+    useLinks((state) => [
+      state.storageLinks,
+      state.setStorageLinks,
+      state.setLongUrl,
+      state.setShortedLink,
+      state.setModalVisible,
+    ]);
 
   const handlePress = () => {
     setLongUrl(data.long_url);
-    setShortedLink(data.link);
+    setShortedLink(data.url);
     setModalVisible(true);
   };
 

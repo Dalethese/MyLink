@@ -1,10 +1,8 @@
-import axios from "axios";
-import { BITLY_KEY } from "@env";
+import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: "https://api-ssl.bitly.com/v4",
+  baseURL: 'https://api.encurtador.dev',
   headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${BITLY_KEY}`,
+    'Content-Type': 'application/json',
   },
 });

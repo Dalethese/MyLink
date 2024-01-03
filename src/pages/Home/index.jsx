@@ -36,30 +36,31 @@ export const Home = () => {
     modalVisible: state.modalVisible,
   }));
 
-  const { setInput, setLoading, setModalVisible, setShortedLink, setLongUrl } =
-    useLinks((state) => ({
+  const { setInput, setLoading, setModalVisible, setShortedLink, setLongUrl } = useLinks(
+    (state) => ({
       setInput: state.setInput,
       setLoading: state.setLoading,
       setModalVisible: state.setModalVisible,
       setShortedLink: state.setShortedLink,
       setLongUrl: state.setLongUrl,
-    }));
+    })
+  );
 
   const handleShortLink = async () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/shorten', {
-        long_url: input,
+      const response = await api.post('/encurtamentos', {
+        url: input,
       });
 
       setLongUrl(input);
-      setShortedLink(response.data.link);
+      setShortedLink(response.data.urlEncurtada);
 
       saveLinks('sLinks', {
-        id: response.data.id,
-        link: response.data.link,
-        long_url: response.data.long_url,
+        id: response.data.urlEncurtada,
+        url: response.data.urlEncurtada,
+        long_url: input,
       });
 
       setModalVisible(true);
@@ -67,6 +68,7 @@ export const Home = () => {
       setInput('');
     } catch (error) {
       alert('Ocorreu um erro, tente novamente!');
+      console.log(error);
       Keyboard.dismiss();
       setInput('');
     } finally {
@@ -110,10 +112,7 @@ export const Home = () => {
           enabled
         >
           <ContainerLogo>
-            <Logo
-              source={require('../../assets/Logo.png')}
-              resizeMode="contain"
-            />
+            <Logo source={require('../../assets/Logo.png')} resizeMode="contain" />
           </ContainerLogo>
 
           <ContainerContent>

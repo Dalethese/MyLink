@@ -1,23 +1,25 @@
+import { useEffect } from 'react';
 import { ActivityIndicator, FlatList, Modal } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import useLinks from '../../hooks/useLinks';
+import { getStorageLinks } from '../../utils/storeLink';
 import { StatusBarPage } from '../../components/StatusBarPage';
-import { Container, EmptyContainer, Title, WarningText } from './style';
 import { Menu } from '../../components/Menu';
 import ListItem from '../../components/ListItem';
 import { ModalLink } from '../../components/ModalLink';
-import useLinks from '../../hooks/useLinks';
-import { useEffect } from 'react';
-import { getStorageLinks } from '../../utils/storeLink';
-import { useIsFocused } from '@react-navigation/native';
+import { Container, EmptyContainer, Title, WarningText } from './style';
 
 export const MyLinks = () => {
-  const [storageLinks, modalVisible, loading, setStorageLinks, setLoading] =
-    useLinks((state) => [
+  const [storageLinks, modalVisible, loading, setStorageLinks, setLoading] = useLinks(
+    (state) => [
       state.storageLinks,
       state.modalVisible,
       state.loading,
       state.setStorageLinks,
       state.setLoading,
-    ]);
+    ]
+  );
+
   let isFocused = useIsFocused();
 
   useEffect(() => {
